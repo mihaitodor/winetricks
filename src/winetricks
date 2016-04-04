@@ -354,9 +354,9 @@ w_try_msiexec64()
 
 w_try_regedit()
 {
-    # On Windows, doesn't work without cmd /c
-    case "$OS" in
-    "Windows_NT") cmdc="cmd /c";;
+    # on windows, doesn't work without cmd /c
+    case "$W_PLATFORM" in
+    windows_cmd|wine_cmd) cmdc="cmd /c";;
     *) unset cmdc ;;
     esac
 
@@ -496,8 +496,8 @@ winetricks_wintounix()
 # so -u to convert to Unix, and -w to convert to Windows
 w_pathconv()
 {
-    case "$OS" in
-     "Windows_NT")
+    case "$W_PLATFORM" in
+     windows_cmd)
         # for some reason, cygpath turns some spaces into newlines?!
         cygpath "$@" | tr '\012' '\040' | sed 's/ $//'
         ;;
@@ -1531,8 +1531,8 @@ _EOF_
 
 w_skip_windows()
 {
-    case "$OS" in
-    "Windows_NT")
+    case "$W_PLATFORM" in
+     windows_cmd)
         echo "Skipping operation '$1' on Windows"
         return 0
         ;;
@@ -2206,8 +2206,8 @@ w_metadata()
     # so check for lines that aren't properly quoted.
 
     # Do sanity check unless running on Cygwin, where it's way too slow.
-    case "$OS" in
-    "Windows_NT")
+    case "$W_PLATFORM" in
+     windows_cmd)
         ;;
     *)
         if grep '[^"]$' "$file"
@@ -2299,8 +2299,8 @@ w_do_call()
         fi
 
         # If needed, set the app's wineprefix
-        case "$OS" in
-        Windows_NT)
+        case "$W_PLATFORM" in
+            windows_cmd|wine_cmd)
             ;;
         *)
             case "$category"-"$WINETRICKS_OPT_SHAREDPREFIX" in
@@ -2457,6 +2457,21 @@ winetricks_get_sha1sum_prog() {
         WINETRICKS_SHA1SUM="openssl dgst -sha1"
     else
         w_die "No sha1sum utility available."
+    fi
+}
+
+winetricks_get_platform()
+{
+    if [ "${OS}" = "Windows_NT" ]
+    then
+        if [ ! -v ${WINELOADERNOEXEC} ]
+        then
+            export W_PLATFORM="windows_cmd"
+        else
+            export W_PLATFORM="wine_cmd"
+        fi
+    else
+        export W_PLATFORM="wine"
     fi
 }
 
@@ -3355,8 +3370,8 @@ winetricks_is_installed()
         return 1  # not installed
     fi
 
-    case "$OS" in
-    Windows_NT)
+    case "$W_PLATFORM" in
+    windows_cmd|wine_cmd)
         # On Windows, there's no wineprefix, just check if file's there
         _W_file_unix="`w_pathconv -u "$_W_file"`"
         if test -f "$_W_file_unix"
@@ -4056,8 +4071,8 @@ winetricks_set_wineprefix()
     *unknown*) w_die "$WINE cmd.exe /c echo '%ProgramFiles%' returned a string containing the word 'unknown', as if a voice had cried out in terror, and was suddenly silenced." ;;
     esac
 
-    case "$OS" in
-    "Windows_NT")
+    case "$W_PLATFORM" in
+    windows_cmd)
         W_DRIVE_C="/cygdrive/c" ;;
     *)
         W_DRIVE_C="$WINEPREFIX/dosdevices/c:" ;;
@@ -4076,8 +4091,8 @@ winetricks_set_wineprefix()
         W_TMP_WIN="C:\\windows\\Temp\\_$1"
     fi
 
-    case "$OS" in
-     "Windows_NT")
+    case "$W_PLATFORM" in
+     "windows_cmd|wine_cmd")
         W_CACHE_WIN="`w_pathconv -w $W_CACHE`"
         ;;
      *)
@@ -4229,6 +4244,8 @@ winetricks_init()
 
     winetricks_get_sha1sum_prog
 
+    winetricks_get_platform
+
     #---- Public Variables ----
 
     # Where application installers are cached
@@ -4253,8 +4270,8 @@ winetricks_init()
     WINETRICKS_AUTH="${WINETRICKS_AUTH:-$XDG_DATA_HOME/winetricks/auth}"
 
     # System-specific variables
-    case "$OS" in
-     "Windows_NT")
+    case "$W_PLATFORM" in
+     windows_cmd)
         WINE=""
         WINESERVER=""
         W_DRIVE_C="C:/"
@@ -5965,8 +5982,8 @@ load_dotnet30()
         esac
     fi
 
-    case "$OS" in
-    "Windows_NT")
+    case "$W_PLATFORM" in
+    windows_cmd)
         osver=`cmd /c ver`
         case "$osver" in
         *Version?6*) w_die "Vista and up bundle .NET 3.0, so you can't install it like this" ;;
@@ -6065,8 +6082,8 @@ w_metadata dotnet35 dlls \
 
 load_dotnet35()
 {
-    case "$OS" in
-    "Windows_NT") ;;
+    case "$W_PLATFORM" in
+    windows_cmd) ;;
     *) w_warn "dotnet35 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
@@ -6113,8 +6130,8 @@ w_metadata dotnet35sp1 dlls \
 
 load_dotnet35sp1()
 {
-    case "$OS" in
-    "Windows_NT") ;;
+    case "$W_PLATFORM" in
+    windows_cmd) ;;
     *) w_warn "dotnet35sp1 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
@@ -6181,9 +6198,9 @@ load_dotnet40()
         w_die "This package does not work on a 64-bit installation"
     fi
 
-    case "$OS" in
-        "Windows_NT") ;;
-        *) w_warn "dotnet40 does not yet fully work or install on Wine.  Caveat emptor." ;;
+    case "$W_PLATFORM" in
+        windows_cmd) ;;
+        *) w_warn "dotnet40 does not yet fully work or install on wine.  Caveat emptor." ;;
     esac
 
     # http://www.microsoft.com/download/en/details.aspx?id=17718
@@ -15343,8 +15360,8 @@ load_masseffect2_demo()
     fi
 
     # Don't let self-extractor write into $W_CACHE
-    case "$OS" in
-        "Windows_NT")
+    case "$W_PLATFORM" in
+        windows_cmd|wine_cmd)
             cp "$W_CACHE/$W_PACKAGE/MassEffect2DemoEN.exe" "$W_TMP"
             chmod +x "$W_TMP"/MassEffect2DemoEN.exe ;;
         *)
@@ -18852,8 +18869,8 @@ winetricks_stats_init()
 winetricks_os_description()
 {
     (
-    case "$OS" in
-    "Windows_NT")
+    case "$W_PLATFORM" in
+     windows_cmd)
         echo windows ;;
     *)  echo "$WINETRICKS_WINE_VERSION" ;;
     esac
@@ -18891,8 +18908,8 @@ winetricks_stats_log_command()
     echo "$*" >> "$WINETRICKS_WORKDIR"/breadcrumbs
 
     # and for the user's own reference later, when figuring out what he did
-    case "$OS" in
-    "Windows_NT") _W_LOGDIR="$W_WINDIR_UNIX"/Temp ;;
+    case "$W_PLATFORM" in
+     windows_cmd) _W_LOGDIR="$W_WINDIR_UNIX"/Temp ;;
     *) _W_LOGDIR="$WINEPREFIX" ;;
     esac
     mkdir -p "$_W_LOGDIR"
