@@ -25,7 +25,7 @@ WINETRICKS_VERSION=20160628
 # - cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, or curl is needed for downloading.
 # - sha1sum or openssl is needed for verifying downloads.
-# - zenity is needed by the GUI, though it can limp along somewhat with kdialog.
+# - zenity, yad, or qarma is needed by the GUI, though it can limp along somewhat with kdialog.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
 #   for the user when downloads cannot be fully automated.
 # - sudo is used to mount .iso images if the user cached them with -k option.
@@ -170,7 +170,7 @@ w_askpermission()
     fi
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    zenity|yad|qarma) $WINETRICKS_GUI $_W_timeout --question --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
     kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
     none) printf %s "Press Y or N, then Enter: " ; read response ; test "$response" = Y || test "$response" = y;;
     esac
@@ -197,7 +197,7 @@ w_info()
     _W_timeout="--timeout 3"
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --info --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
+    zenity|yad|qarma) $WINETRICKS_GUI $_W_timeout --info --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`" --no-wrap;;
     kdialog) $WINETRICKS_GUI --title winetricks --msgbox "$@" ;;
     none) ;;
     esac
@@ -218,7 +218,7 @@ w_warn()
     fi
 
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
+    zenity|yad|qarma) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
     kdialog) $WINETRICKS_GUI --title winetricks --error "$@" ;;
     none) ;;
     esac
@@ -242,7 +242,7 @@ w_warn_cancel()
 
     # Zenity has no cancel button, but will set status to 1 if you click the go-away X
     case $WINETRICKS_GUI in
-    zenity) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
+    zenity|yad|qarma) $WINETRICKS_GUI $_W_timeout --error --title=winetricks --text="`echo $@ | sed 's,\\\\,\\\\\\\\,g'`";;
     kdialog) $WINETRICKS_GUI --title winetricks --warningcontinuecancel "$@" ;;
     none) ;;
     esac
@@ -460,8 +460,8 @@ w_read_key()
             ;;
         esac
         case $WINETRICKS_GUI in
-        *zenity) W_KEY=`zenity --entry --text "$_W_keymsg"` ;;
-        *kdialog) W_KEY=`kdialog --inputbox "$_W_keymsg"` ;;
+        *zenity|*yad|*qarma) W_KEY=`$WINETRICKS_GUI --entry --text "$_W_keymsg"` ;;
+        *kdialog) W_KEY=`$WINETRICKS_GUI --inputbox "$_W_keymsg"` ;;
         *xmessage) w_die "sorry, can't read key from GUI with xmessage" ;;
         none) printf %s "$_W_keymsg": ; read W_KEY ;;
         esac
@@ -566,7 +566,7 @@ winetricks_parse_wget_progress()
 winetricks_wget_progress()
 {
     case $WINETRICKS_GUI in
-    zenity)
+    zenity|yad|qarma)
         # Usa a subshell so if the user clicks 'Cancel',
         # the --auto-kill kills the subshell, not the current shell
         (
@@ -1136,7 +1136,7 @@ done
 w_question()
 {
     case $WINETRICKS_GUI in
-    *zenity) $WINETRICKS_GUI --entry --text "$1" ;;
+    *zenity|*yad|*qarma) $WINETRICKS_GUI --entry --text "$1" ;;
     *kdialog) $WINETRICKS_GUI --inputbox "$1" ;;
     *xmessage) w_die "sorry, can't ask question with xmessage" ;;
     none) echo -n "$1" >&2 ; read W_ANSWER ; echo $W_ANSWER; unset W_ANSWER;;
@@ -2493,6 +2493,18 @@ winetricks_detect_gui()
 
         WINETRICKS_MENU_HEIGHT=500
         WINETRICKS_MENU_WIDTH=1010
+    elif test -x "`which yad 2>/dev/null`"
+    then
+        WINETRICKS_GUI=yad
+
+        WINETRICKS_MENU_HEIGHT=500
+        WINETRICKS_MENU_WIDTH=1010
+    elif test -x "`which qarma 2>/dev/null`"
+    then
+        WINETRICKS_GUI=qarma
+
+        WINETRICKS_MENU_HEIGHT=500
+        WINETRICKS_MENU_WIDTH=1010
     elif test -x "`which kdialog 2>/dev/null`"
     then
         echo "Zenity not found!  Using kdialog as poor substitute."
@@ -2628,8 +2640,8 @@ winetricks_prefixmenu()
     esac
 
     case $WINETRICKS_GUI in
-    zenity)
-        printf %s "zenity \
+    zenity|yad|qarma)
+        printf %s "$WINETRICKS_GUI \
             --title '$_W_msg_title' \
             --text '$_W_msg_body' \
             --list \
@@ -2676,7 +2688,7 @@ winetricks_prefixmenu()
 
     kdialog)
         (
-        printf %s "kdialog \
+        printf %s "$WINETRICKS_GUI \
             --geometry 600x400+100+100 \
             --title '$_W_msg_title' \
             --separate-output \
@@ -2819,9 +2831,9 @@ winetricks_mainmenu()
     esac
 
     case $WINETRICKS_GUI in
-    zenity)
+    zenity|yad|qarma)
         (
-          printf %s "zenity \
+          printf %s "$WINETRICKS_GUI \
             --title '$_W_msg_title' \
             --text '$_W_msg_body' \
             --list \
@@ -2901,9 +2913,9 @@ winetricks_settings_menu()
     esac
 
     case $WINETRICKS_GUI in
-    zenity)
+    zenity|yad|qarma)
         case $LANG in
-        da*) printf %s "zenity \
+        da*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2915,7 +2927,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        de*) printf %s "zenity \
+        de*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2927,7 +2939,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        pl*) printf %s "zenity \
+        pl*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2939,7 +2951,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        ru*) printf %s "zenity \
+        ru*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2951,7 +2963,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        uk*) printf %s "zenity \
+        uk*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2963,7 +2975,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        zh_CN*) printf %s "zenity \
+        zh_CN*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2975,7 +2987,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        zh_TW*|zh_HK*) printf %s "zenity \
+        zh_TW*|zh_HK*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -2987,7 +2999,7 @@ winetricks_settings_menu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        *) printf %s "zenity \
+        *) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3077,9 +3089,9 @@ winetricks_showmenu()
 
 
     case $WINETRICKS_GUI in
-    zenity)
+    zenity|qad|yarma)
         case $LANG in
-        da*) printf %s "zenity \
+        da*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3097,7 +3109,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
             ;;
-        de*) printf %s "zenity \
+        de*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3115,7 +3127,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        pl*) printf %s "zenity \
+        pl*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3133,7 +3145,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        ru*) printf %s "zenity \
+        ru*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3151,7 +3163,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        uk*) printf %s "zenity \
+        uk*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3169,7 +3181,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        zh_CN*) printf %s "zenity \
+        zh_CN*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3187,7 +3199,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        zh_TW*|zh_HK*) printf %s "zenity \
+        zh_TW*|zh_HK*) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3205,7 +3217,7 @@ winetricks_showmenu()
                 --width $WINETRICKS_MENU_WIDTH \
                 "
              ;;
-        *) printf %s "zenity \
+        *) printf %s "$WINETRICKS_GUI \
                 --title '$_W_msg_title' \
                 --text '$_W_msg_body' \
                 --list \
@@ -3738,7 +3750,7 @@ winetricks_cache_iso()
           ls -l "$W_CACHE"/temp.iso
         done
         ;;
-    zenity)
+    zenity|qad|yarma)
         while ps -p $WINETRICKS_DD_PID > /dev/null 2>&1
         do
           echo 1
@@ -4463,7 +4475,7 @@ then
     WINETRICKS_SRCDIR=`dirname "$0"`
     WINETRICKS_SRCDIR=`cd "$WINETRICKS_SRCDIR"; pwd`
 
-    # Which GUI helper to use (none/zenity/kdialog).  See winetricks_detect_gui.
+    # Which GUI helper to use (none/zenity/yad/qarma/kdialog).  See winetricks_detect_gui.
     WINETRICKS_GUI=none
     # Default to a shared prefix:
     WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-1}
@@ -18796,7 +18808,7 @@ winetricks_stats_init()
     then
         # No opt-in status found.  If GUI active, ask user whether they would like to opt in.
         case $WINETRICKS_GUI in
-        zenity)
+        zenity|yad|qarma)
             case $LANG in
             de*)
                 title="Einmalige Frage zur Hilfe an der Winetricks Entwicklung"
