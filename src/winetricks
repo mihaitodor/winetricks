@@ -2652,6 +2652,7 @@ winetricks_prefixmenu()
             --height $WINETRICKS_MENU_HEIGHT \
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
+            --print-column=2 --separator='' \
             FALSE help       '$_W_msg_help' \
             FALSE apps       '$_W_msg_apps' \
             FALSE benchmarks '$_W_msg_benchmarks' \
@@ -2844,6 +2845,7 @@ winetricks_mainmenu()
             --height $WINETRICKS_MENU_HEIGHT \
             --width $WINETRICKS_MENU_WIDTH \
             --hide-column 2 \
+            --print-column=2 --separator='' \
             FALSE dlls        '$_W_msg_dlls' \
             FALSE fonts       '$_W_msg_fonts' \
             FALSE settings    '$_W_msg_settings' \
