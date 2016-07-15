@@ -2487,7 +2487,7 @@ winetricks_early_wine()
 
 winetricks_detect_gui()
 {
-    if test -x "`which zenity 2>/dev/null`"
+    if test -x "`which aaazenity 2>/dev/null`"
     then
         WINETRICKS_GUI=zenity
 
@@ -2925,6 +2925,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column Pakke \
                 --column Navn \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2937,6 +2938,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column Einstellung \
                 --column Name \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2949,6 +2951,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column Ustawienie \
                 --column Nazwa \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2961,6 +2964,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column Установка \
                 --column Имя \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2973,6 +2977,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column Установка \
                 --column Назва \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2985,6 +2990,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column 设置 \
                 --column 标题 \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -2997,6 +3003,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column 設定 \
                 --column 標題 \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
@@ -3009,6 +3016,7 @@ winetricks_settings_menu()
                 --column '' \
                 --column Setting \
                 --column Title \
+                --print-column=2 --separator='' \
                 --height $WINETRICKS_MENU_HEIGHT \
                 --width $WINETRICKS_MENU_WIDTH \
                 "
