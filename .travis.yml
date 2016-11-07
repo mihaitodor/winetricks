@@ -5,42 +5,55 @@ os:
 sudo: required
 dist: trusty
 
-
-# Note: needed by winetricks-test, which not yet supported in TravisCI
-# - cabextract
-# - p7zip
-# - unrar
-# - unzip
-# - wine
-
 addons:
   apt:
     packages:
     # for checkbashisms
     - devscripts
+    - xvfb
 
 # Note: if statements cannot go across multiple lines. Combine into one, or move to a shell script!
+# Note 2: there are no 32-bit vms, see: https://github.com/travis-ci/travis-ci/issues/986
 
 # On Ubuntu, shellcheck is not in trusty, but is in trusty-backports, but those aren't available in TravisCI..)
 # Using zesty to get 0.4.4, which has support for disabling a check globally within a file
 before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ zesty universe" | sudo tee -a /etc/apt/sources.list ; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install shellcheck ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install cabextract shellcheck ; fi
 
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install cabextract checkbashisms shellcheck ; fi
+
+    - # wine currently doesn't install, placeholder
+    - # FIXME: linux (1.9.x) / osx (1.8.x) wine versions differ
+
+    - # if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then sudo add-apt-repository ppa:wine/wine-builds -y ; fi
+    - # if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then sudo dpkg --add-architecture i386 ; fi
+    - # if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install --install-recommends wine-devel-i386 ; fi
+    - # if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install --install-recommends winehq-devel ; fi
+
+    - # FIXME: need to test on osx if not having unzip works (should fall back to p7zip anyway):
+    - # If not, to get the unzip we need, I think we need:
+    - # $ brew tap homebrew/dupes
+    - # $ brew install unzip
+    - # From https://apple.stackexchange.com/questions/149080/how-can-i-update-my-version-of-unzip-to-version-6-00-or-higher
+    - # if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install p7zip unrar wine ; fi
+
+# Until wine install works reliably...
+before_script:
+    - # mkdir -p "${HOME}/.cache/wine"
+
+    - # FIXME: generic URL for mono doesn't download to its true name (wine-mono-4.6.3.msi), but as winemono.php
+    - # wget -P "${HOME}/.cache/wine" https://source.winehq.org/winemono.php
+    - # wget -P "${HOME}/.cache/wine" https://dl.winehq.org/wine/wine-mono/4.6.3/wine-mono-4.6.3.msi
+
+    - # FIXME: what's a generic URL for winegecko?
+    - # wget -P "${HOME}/.cache/wine" https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
 
 # Note if testing on a branch, you can replace this with your desired command, e.g.,:
 # script: time sh ./src/winetricks comctl32
 # Some tests require a working $DISPLAY, and not just Xvfb. See tests/winetricks-test for the list.
 # Either skip those / test manually, or run them on OS X.
-
-# Also note:
-# Installing wine on the vms is a pain.
-# Linux: currently can't get 1.8.x / 1.9.x installed :/
-# OS X: 38 minutes
-
-# shell-checks is quick and works, no display or compiles needed
 
 script: time sh ./tests/shell-checks
