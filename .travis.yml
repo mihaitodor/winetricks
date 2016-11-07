@@ -5,29 +5,53 @@ os:
 sudo: required
 dist: trusty
 
-
-# Note: needed by winetricks-test, which not yet supported in TravisCI
-# - cabextract
-# - p7zip
-# - unrar
-# - unzip
-# - wine
-
 addons:
   apt:
     packages:
     # for checkbashisms
     - devscripts
+    - xvfb
 
 # Note: if statements cannot go across multiple lines. Combine into one, or move to a shell script!
+# Note 2: there are no 32-bit vms, see: https://github.com/travis-ci/travis-ci/issues/986
 
-# On Ubuntu, shellcheck is not in trusty, but is in trusty-backports, but those aren't available in TravisCI..)
 before_install:
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ xenial universe" | sudo tee -a /etc/apt/sources.list ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install shellcheck ; fi
+    - # Dependencies:
+    - # On Ubuntu, shellcheck is not in trusty, but is in trusty-backports, but those aren't available in TravisCI..
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ xenial main universe" | sudo tee -a /etc/apt/sources.list ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install cabextract p7zip shellcheck unrar unzip ; fi
 
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install checkbashisms shellcheck ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install cabextract checkbashisms p7zip shellcheck unrar ; fi
 
-script: time sh ./tests/shell-checks
+    - # FIXME: need to test on osx if not having unzip works (should fall back to p7zip anyway):
+    - # If not, to get the unzip we need, I think we need:
+    - # $ brew tap homebrew/dupes
+    - # $ brew install unzip
+    - # From https://apple.stackexchange.com/questions/149080/how-can-i-update-my-version-of-unzip-to-version-6-00-or-higher
+
+    - # Wine:
+    - # FIXME: linux (1.9.x) / osx (1.8.x) wine versions differ
+
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then sudo dpkg --add-architecture i386 ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then sudo add-apt-repository ppa:wine/wine-builds -y ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install --install-recommends wine-devel-i386 ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install --install-recommends winehq-devel ; fi
+    
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew install wine ; fi
+
+before_script:
+    - # FIXME: this will probably fail on osx..
+    - mkdir -p "${HOME}/.cache/wine"
+
+    - # FIXME: generic URL for mono doesn't download to its true name (wine-mono-4.6.3.msi), but as winemono.php
+    - # wget -P "${HOME}/.cache/wine" https://source.winehq.org/winemono.php
+    - wget -P "${HOME}/.cache/wine" https://dl.winehq.org/wine/wine-mono/4.6.3/wine-mono-4.6.3.msi
+
+    - # FIXME: what's a generic URL for winegecko?
+    - wget -P "${HOME}/.cache/wine" https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
+
+script:
+    - # time make shell-checks
+    - time make xvfb-check
