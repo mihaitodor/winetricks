@@ -15,6 +15,7 @@ addons:
     # for checkbashisms
     - devscripts
     - tor
+    - torsocks
     - xvfb
 
 # Note: if statements cannot go across multiple lines. Combine into one, or move to a shell script!
