@@ -56,7 +56,7 @@ ARCHIVE_ORG_BLACKLIST="$ARCHIVE_ORG_BLACKLIST|richtx32|secur32|tabctl32|usp10|"
 
 # See https://docs.travis-ci.com/user/environment-variables/#Default-Environment-Variables
 if [ "$TRAVIS" = "true" ]; then
-    BLACKLIST="$ARCHIVE_ORG_BLACKLIST|$BLACKLIST"
+    : # BLACKLIST="$ARCHIVE_ORG_BLACKLIST|$BLACKLIST"
 fi
 
 # Verbs known to update frequently
@@ -297,8 +297,8 @@ test_command()
     then
         # A success is failure:
         # shellcheck disable=SC2086
-        "$XVFB" sh winetricks --no-isolate -q nocrashdialog "$@" && fail "$command succeeded, should have failed"
-    elif ! w_time "$XVFB" sh winetricks --no-isolate -q nocrashdialog "$@"
+        "$XVFB" sh winetricks --no-isolate -q nocrashdialog --torify "$@" && fail "$command succeeded, should have failed"
+    elif ! w_time "$XVFB" sh winetricks --no-isolate -q --torify nocrashdialog  "$@"
     then
         rm df-daemon
         fail "test_command $command failed!"

@@ -1,7 +1,11 @@
 language: shell
 os:
   - linux
-  - osx
+  # - osx
+# OSX: need to disable xvfb, or find replacment for osx
+# OSX: may need torify
+
+
 sudo: required
 dist: trusty
 
@@ -10,6 +14,7 @@ addons:
     packages:
     # for checkbashisms
     - devscripts
+    - tor
     - xvfb
 
 # Note: if statements cannot go across multiple lines. Combine into one, or move to a shell script!
