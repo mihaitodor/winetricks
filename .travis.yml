@@ -20,6 +20,8 @@ addons:
 before_install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then echo "deb http://archive.ubuntu.com/ubuntu/ zesty universe" | sudo tee -a /etc/apt/sources.list ; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get -q update ; fi
+    - # https://github.com/NixOS/nixpkgs/issues/18118
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install libc6 ; fi
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then time sudo apt-get install cabextract shellcheck ; fi
 
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]] ; then time brew update ; fi
