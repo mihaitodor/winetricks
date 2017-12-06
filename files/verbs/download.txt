@@ -24,7 +24,9 @@ bioshock2_steam
 bioshock_demo
 borderlands_steam
 cabinet
+calibri
 cambria
+candara
 civ5_demo_steam
 cjkfonts
 cmake
@@ -39,6 +41,7 @@ consolas
 constantia
 controlpad
 controlspy
+corbel
 corefonts
 crayonphysics_demo
 crypt32
@@ -144,6 +147,7 @@ maxmagicmarker_demo
 mdac27
 mdac28
 mdx
+meiryo
 mf
 mfc40
 mfc42
