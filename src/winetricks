@@ -543,11 +543,13 @@ w_try_cp_font_files()
     _W_src_files=$(find "$_W_src_dir" -maxdepth 1 -type f -iname "$_W_pattern")
 
     for _W_src_file in $_W_src_files; do
+        # Extract the file name and lower case it
+        _W_file_name=$(echo "$(basename "$_W_src_file")" | tr "[:upper:]" "[:lower:]")
+
         # Remove any existing font files that might have the same name, but with different case characters
-        _W_file_name=$(echo "$(basename "$_W_src_file")")
         find "$_W_dest_dir" -maxdepth 1 -type f -iname "$_W_file_name" -exec rm '{}' ';'
 
-        w_try cp -f "$_W_src_file" "$_W_dest_dir/"
+        w_try cp -f "$_W_src_file" "$_W_dest_dir/$_W_file_name"
     done
 
     unset _W_src_files _W_dest_dir _W_src_file _W_file_name
@@ -10117,7 +10119,7 @@ w_metadata cambria fonts \
     year="2009" \
     media="download" \
     file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/CAMBRIA.TTC"
+    installed_file1="$W_FONTSDIR_WIN/cambria.ttc"
 
 load_cambria()
 {
@@ -10126,10 +10128,10 @@ load_cambria()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE"/PowerPointViewer/"$file1"
     w_try_cabextract -d "$W_TMP" -F "CAMBRIA*.TT*" "$W_TMP"/ppviewer.cab
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CAMBRIA*.TT*"
-    w_register_font CAMBRIA.TTC "Cambria"
-    w_register_font CAMBRIAB.TTF "Cambria Bold"
-    w_register_font CAMBRIAI.TTF "Cambria Italic"
-    w_register_font CAMBRIAZ.TTF "Cambria Bold Italic"
+    w_register_font cambria.ttc "Cambria"
+    w_register_font cambriab.ttf "Cambria Bold"
+    w_register_font cambriai.ttf "Cambria Italic"
+    w_register_font cambriaz.ttf "Cambria Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10140,7 +10142,7 @@ w_metadata constantia fonts \
     year="2009" \
     media="download" \
     file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/CONSTAN.TTF"
+    installed_file1="$W_FONTSDIR_WIN/constan.ttf"
 
 load_constantia()
 {
@@ -10149,10 +10151,10 @@ load_constantia()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE"/PowerPointViewer/"$file1"
     w_try_cabextract -d "$W_TMP" -F "CONSTAN*.TTF" "$W_TMP"/ppviewer.cab
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CONSTAN*.TTF"
-    w_register_font CONSTAN.TTF "Constantia"
-    w_register_font CONSTANB.TTF "Constantia Bold"
-    w_register_font CONSTANI.TTF "Constantia Italic"
-    w_register_font CONSTANZ.TTF "Constantia Bold Italic"
+    w_register_font constan.ttf "Constantia"
+    w_register_font constanb.ttf "Constantia Bold"
+    w_register_font constani.ttf "Constantia Italic"
+    w_register_font constanz.ttf "Constantia Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10163,7 +10165,7 @@ w_metadata consolas fonts \
     year="2011" \
     media="download" \
     file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/CONSOLA.TTF"
+    installed_file1="$W_FONTSDIR_WIN/consola.ttf"
 
 load_consolas()
 {
@@ -10172,10 +10174,10 @@ load_consolas()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE"/PowerPointViewer/"$file1"
     w_try_cabextract -d "$W_TMP" -F "CONSOLA*.TTF" "$W_TMP"/ppviewer.cab
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CONSOLA*.TTF"
-    w_register_font CONSOLA.TTF "Consolas"
-    w_register_font CONSOLAB.TTF "Consolas Bold"
-    w_register_font CONSOLAI.TTF "Consolas Italic"
-    w_register_font CONSOLAZ.TTF "Consolas Bold Italic"
+    w_register_font consola.ttf "Consolas"
+    w_register_font consolab.ttf "consolas Bold"
+    w_register_font consolai.ttf "Consolas Italic"
+    w_register_font consolaz.ttf "Consolas Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10186,7 +10188,7 @@ w_metadata calibri fonts \
     year="2007" \
     media="download" \
     file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/CALIBRI.TTF"
+    installed_file1="$W_FONTSDIR_WIN/calibri.ttf"
 
 load_calibri()
 {
@@ -10195,10 +10197,10 @@ load_calibri()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE"/PowerPointViewer/"$file1"
     w_try_cabextract -d "$W_TMP" -F "CALIBRI*.TTF" "$W_TMP"/ppviewer.cab
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CALIBRI*.TTF"
-    w_register_font CALIBRI.TTF "Calibri"
-    w_register_font CALIBRIB.TTF "Calibri Bold"
-    w_register_font CALIBRII.TTF "Calibri Italic"
-    w_register_font CALIBRIZ.TTF "Calibri Bold Italic"
+    w_register_font calibri.ttf "Calibri"
+    w_register_font calibrib.ttf "Calibri Bold"
+    w_register_font calibrii.ttf "Calibri Italic"
+    w_register_font calibriz.ttf "Calibri Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10209,7 +10211,7 @@ w_metadata candara fonts \
     year="2009" \
     media="download" \
     file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/CANDARA.TTF"
+    installed_file1="$W_FONTSDIR_WIN/candara.ttf"
 
 load_candara()
 {
@@ -10218,10 +10220,10 @@ load_candara()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE"/PowerPointViewer/"$file1"
     w_try_cabextract -d "$W_TMP" -F "CANDARA*.TTF" "$W_TMP"/ppviewer.cab
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CANDARA*.TTF"
-    w_register_font CANDARA.TTF "Candara"
-    w_register_font CANDARAB.TTF "Candara Bold"
-    w_register_font CANDARAI.TTF "Candara Italic"
-    w_register_font CANDARAZ.TTF "Candara Bold Italic"
+    w_register_font candara.ttf "Candara"
+    w_register_font candarab.ttf "Candara Bold"
+    w_register_font candarai.ttf "Candara Italic"
+    w_register_font candaraz.ttf "Candara Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10232,7 +10234,7 @@ w_metadata corbel fonts \
     year="2009" \
     media="download" \
     file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/CORBEL.TTF"
+    installed_file1="$W_FONTSDIR_WIN/corbel.ttf"
 
 load_corbel()
 {
@@ -10241,10 +10243,10 @@ load_corbel()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE"/PowerPointViewer/"$file1"
     w_try_cabextract -d "$W_TMP" -F "CORBEL*.TTF" "$W_TMP"/ppviewer.cab
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "CORBEL*.TTF"
-    w_register_font CORBEL.TTF "Corbel"
-    w_register_font CORBELB.TTF "Corbel Bold"
-    w_register_font CORBELI.TTF "Corbel Italic"
-    w_register_font CORBELZ.TTF "Corbel Bold Italic"
+    w_register_font corbel.ttf "Corbel"
+    w_register_font corbelb.ttf "Corbel Bold"
+    w_register_font corbeli.ttf "Corbel Italic"
+    w_register_font corbelz.ttf "Corbel Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10255,7 +10257,7 @@ w_metadata meiryo fonts \
     year="2009" \
     media="download" \
     file1="PowerPointViewer.exe" \
-    installed_file1="$W_FONTSDIR_WIN/MEIRYO.TTC"
+    installed_file1="$W_FONTSDIR_WIN/meiryo.ttc"
 
 load_meiryo()
 {
@@ -10264,8 +10266,8 @@ load_meiryo()
     w_try_cabextract -d "$W_TMP" -F "ppviewer.cab" "$W_CACHE"/PowerPointViewer/"$file1"
     w_try_cabextract -d "$W_TMP" -F "MEIRYO*.TTC" "$W_TMP"/ppviewer.cab
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "MEIRYO*.TTC"
-    w_register_font MEIRYO.TTC "Meiryo & Meiryo Italic & Meiryo UI & Meiryo UI Italic"
-    w_register_font MEIRYOB.TTC "Meiryo Bold & Meiryo Bold Italic & Meiryo UI Bold & Meiryo UI Bold Italic"
+    w_register_font meiryo.ttc "Meiryo & Meiryo Italic & Meiryo UI & Meiryo UI Italic"
+    w_register_font meiryob.ttc "Meiryo Bold & Meiryo Bold Italic & Meiryo UI Bold & Meiryo UI Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10276,7 +10278,7 @@ w_metadata corefonts fonts \
     year="2008" \
     media="download" \
     file1="arial32.exe" \
-    installed_file1="$W_FONTSDIR_WIN/Arial.TTF"
+    installed_file1="$W_FONTSDIR_WIN/arial.ttf"
 
 load_corefonts()
 {
@@ -10298,19 +10300,19 @@ load_corefonts()
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/arial32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Arial*.TTF"
-    w_register_font Arial.TTF "Arial"
-    w_register_font Arialbd.TTF "Arial Bold"
-    w_register_font Arialbi.TTF "Arial Bold Italic"
-    w_register_font Ariali.TTF "Arial Italic"
+    w_register_font arial.ttf "Arial"
+    w_register_font arialbd.ttf "Arial Bold"
+    w_register_font arialbi.ttf "Arial Bold Italic"
+    w_register_font ariali.ttf "Arial Italic"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/arialb32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "AriBlk.TTF"
-    w_register_font AriBlk.TTF "Arial Black"
+    w_register_font ariblk.ttf "Arial Black"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/comic32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Comic*.TTF"
-    w_register_font Comic.TTF "Comic Sans MS"
-    w_register_font Comicbd.TTF "Comic Sans MS Bold"
+    w_register_font comic.ttf "Comic Sans MS"
+    w_register_font comicbd.ttf "Comic Sans MS Bold"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/courie32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "cour*.ttf"
@@ -10321,39 +10323,39 @@ load_corefonts()
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/georgi32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Georgia*.TTF"
-    w_register_font Georgia.TTF "Georgia"
-    w_register_font Georgiab.TTF "Georgia Bold"
-    w_register_font Georgiaz.TTF "Georgia Bold Italic"
-    w_register_font Georgiai.TTF "Georgia Italic"
+    w_register_font georgia.ttf "Georgia"
+    w_register_font georgiab.ttf "Georgia Bold"
+    w_register_font georgiaz.ttf "Georgia Bold Italic"
+    w_register_font georgiai.ttf "Georgia Italic"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/impact32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Impact.TTF"
-    w_register_font Impact.TTF "Impact"
+    w_register_font impact.ttf "Impact"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/times32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Times*.TTF"
-    w_register_font Times.TTF "Times New Roman"
-    w_register_font Timesbd.TTF "Times New Roman Bold"
-    w_register_font Timesbi.TTF "Times New Roman Bold Italic"
-    w_register_font Timesi.TTF "Times New Roman Italic"
+    w_register_font times.ttf "Times New Roman"
+    w_register_font timesbd.ttf "Times New Roman Bold"
+    w_register_font timesbi.ttf "Times New Roman Bold Italic"
+    w_register_font timesi.ttf "Times New Roman Italic"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/trebuc32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "[tT]rebuc*.ttf"
-    w_register_font trebuc.TTF "Trebucet MS"
-    w_register_font Trebucbd.TTF "Trebucet MS Bold"
-    w_register_font trebucbi.TTF "Trebucet MS Bold Italic"
-    w_register_font trebucit.TTF "Trebucet MS Italic"
+    w_register_font trebuc.ttf "Trebucet MS"
+    w_register_font trebucbd.ttf "Trebucet MS Bold"
+    w_register_font trebucbi.ttf "Trebucet MS Bold Italic"
+    w_register_font trebucit.ttf "Trebucet MS Italic"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/verdan32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Verdana*.TTF"
-    w_register_font Verdana.TTF "Verdana"
-    w_register_font Verdanab.TTF "Verdana Bold"
-    w_register_font Verdanaz.TTF "Verdana Bold Italic"
-    w_register_font Verdanai.TTF "Verdana Italic"
+    w_register_font verdana.ttf "Verdana"
+    w_register_font verdanab.ttf "Verdana Bold"
+    w_register_font verdanaz.ttf "Verdana Bold Italic"
+    w_register_font verdanai.ttf "Verdana Italic"
 
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/corefonts/webdin32.exe
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "Webdings.TTF"
-    w_register_font Webdings.TTF "Webdings"
+    w_register_font webdings.ttf "Webdings"
 }
 
 #----------------------------------------------------------------
@@ -10364,12 +10366,12 @@ w_metadata droid fonts \
     year="2009" \
     media="download" \
     file1="DroidSans-Bold.ttf" \
-    installed_file1="$W_FONTSDIR_WIN/DroidSans-Bold.ttf"
+    installed_file1="$W_FONTSDIR_WIN/droidsans-bold.ttf"
 
 do_droid() {
     w_download "${_W_droid_url}${1}?raw=true" "$3"  "$1"
     w_try_cp_font_files "$W_CACHE/droid" "$W_FONTSDIR_UNIX" "$1"
-    w_register_font "$1" "$2"
+    w_register_font $(echo "$1" | tr "[:upper:]" "[:lower:]") "$2"
 }
 
 load_droid()
@@ -10410,22 +10412,22 @@ load_eufonts()
     w_try_cabextract -d "$W_TMP" "$W_CACHE"/eufonts/EUupdate.EXE
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX"
 
-    w_register_font ArialBd.ttf "Arial Bold"
-    w_register_font ArialBI.ttf "Arial Bold Italic"
-    w_register_font ArialI.ttf "Arial Italic"
-    w_register_font Arial.ttf "Arial"
-    w_register_font TimesBd.ttf "Times New Roman Bold"
-    w_register_font TimesBI.ttf "Times New Roman Bold Italic"
-    w_register_font TimesI.ttf "Times New Roman Italic"
-    w_register_font Times.ttf "Times New Roman"
+    w_register_font arialbd.ttf "Arial Bold"
+    w_register_font arialbi.ttf "Arial Bold Italic"
+    w_register_font ariali.ttf "Arial Italic"
+    w_register_font arial.ttf "Arial"
+    w_register_font timesbd.ttf "Times New Roman Bold"
+    w_register_font timesbi.ttf "Times New Roman Bold Italic"
+    w_register_font timesi.ttf "Times New Roman Italic"
+    w_register_font times.ttf "Times New Roman"
     w_register_font trebucbd.ttf "Trebuchet Bold"
     w_register_font trebucbi.ttf "Trebuchet Bold Italic"
     w_register_font trebucit.ttf "Trebuchet Italic"
     w_register_font trebuc.ttf "Trebuchet"
-    w_register_font Verdanab.ttf "Verdana Bold"
-    w_register_font Verdanai.ttf "Verdana Italian"
-    w_register_font Verdana.ttf "Verdana"
-    w_register_font Verdanaz.ttf "Verdana Bold Italic"
+    w_register_font verdanab.ttf "Verdana Bold"
+    w_register_font verdanai.ttf "Verdana Italian"
+    w_register_font verdana.ttf "Verdana"
+    w_register_font verdanaz.ttf "Verdana Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10619,7 +10621,7 @@ w_metadata liberation fonts \
     year="2008" \
     media="download" \
     file1="liberation-fonts-ttf-1.07.4.tar.gz" \
-    installed_file1="$W_FONTSDIR_WIN/LiberationMono-BoldItalic.ttf"
+    installed_file1="$W_FONTSDIR_WIN/liberationmono-bolditalic.ttf"
 
 load_liberation()
 {
@@ -10630,22 +10632,22 @@ load_liberation()
     w_try tar -zxf "$W_CACHE/$W_PACKAGE/$file1"
     w_try_cp_font_files "${file1%.tar.gz}" "$W_FONTSDIR_UNIX"
 
-    w_register_font LiberationMono-BoldItalic.ttf "LiberationMono-BoldItalic"
-    w_register_font LiberationMono-Bold.ttf "LiberationMono-Bold"
-    w_register_font LiberationMono-Italic.ttf "LiberationMono-Italic"
-    w_register_font LiberationMono-Regular.ttf "LiberationMono-Regular"
-    w_register_font LiberationSans-BoldItalic.ttf "LiberationSans-BoldItalic"
-    w_register_font LiberationSans-Bold.ttf "LiberationSans-Bold"
-    w_register_font LiberationSans-Italic.ttf "LiberationSans-Italic"
-    w_register_font LiberationSans-Regular.ttf "LiberationSans-Regular"
-    w_register_font LiberationSerif-BoldItalic.ttf "LiberationSerif-BoldItalic"
-    w_register_font LiberationSerif-Bold.ttf "LiberationSerif-Bold"
-    w_register_font LiberationSerif-Italic.ttf "LiberationSerif-Italic"
-    w_register_font LiberationSerif-Regular.ttf "LiberationSerif-Regular"
-    w_register_font LiberationSansNarrow-BoldItalic.ttf "LiberationSansNarrow-BoldItalic"
-    w_register_font LiberationSansNarrow-Bold.ttf "LiberationSansNarrow-Bold"
-    w_register_font LiberationSansNarrow-Italic.ttf "LiberationSansNarrow-Italic"
-    w_register_font LiberationSansNarrow-Regular.ttf "LiberationSansNarrow-Regular"
+    w_register_font liberationmono-bolditalic.ttf "LiberationMono-BoldItalic"
+    w_register_font liberationmono-bold.ttf "LiberationMono-Bold"
+    w_register_font liberationmono-italic.ttf "LiberationMono-Italic"
+    w_register_font liberationmono-regular.ttf "LiberationMono-Regular"
+    w_register_font liberationsans-bolditalic.ttf "LiberationSans-BoldItalic"
+    w_register_font liberationsans-bold.ttf "LiberationSans-Bold"
+    w_register_font liberationsans-italic.ttf "LiberationSans-Italic"
+    w_register_font liberationsans-regular.ttf "LiberationSans-Regular"
+    w_register_font liberationserif-bolditalic.ttf "LiberationSerif-BoldItalic"
+    w_register_font liberationserif-bold.ttf "LiberationSerif-Bold"
+    w_register_font liberationserif-italic.ttf "LiberationSerif-Italic"
+    w_register_font liberationserif-regular.ttf "LiberationSerif-Regular"
+    w_register_font liberationsansnarrow-bolditalic.ttf "LiberationSansNarrow-BoldItalic"
+    w_register_font liberationsansnarrow-bold.ttf "LiberationSansNarrow-Bold"
+    w_register_font liberationsansnarrow-italic.ttf "LiberationSansNarrow-Italic"
+    w_register_font liberationsansnarrow-regular.ttf "LiberationSansNarrow-Regular"
 }
 
 #----------------------------------------------------------------
@@ -10698,7 +10700,7 @@ w_metadata tahoma fonts \
     year="2007" \
     media="download" \
     file1="tahoma32.exe" \
-    installed_file1="$W_FONTSDIR_WIN/Tahoma.TTF"
+    installed_file1="$W_FONTSDIR_WIN/tahoma.ttf"
 
 load_tahoma()
 {
@@ -10710,8 +10712,8 @@ load_tahoma()
     w_try_cp_font_files "$W_TMP" "$W_FONTSDIR_UNIX" "*.TTF"
 
     # FIXME: Wine seems to nuke the registry entries for Tahoma. Why? Font Xplorer always lists it as 'not installed'.
-    w_register_font Tahoma.TTF "Tahoma"
-    w_register_font Tahomabd.TTF "Tahoma Bold"
+    w_register_font tahoma.ttf "Tahoma"
+    w_register_font tahomabd.ttf "Tahoma Bold"
 }
 
 #----------------------------------------------------------------
@@ -10722,7 +10724,7 @@ w_metadata takao fonts \
     year="2010" \
     media="download" \
     file1="takao-fonts-ttf-003.02.01.zip" \
-    installed_file1="$W_FONTSDIR_WIN/TakaoGothic.ttf"
+    installed_file1="$W_FONTSDIR_WIN/takaogothic.ttf"
 
 load_takao()
 {
@@ -10732,12 +10734,12 @@ load_takao()
     w_try_unzip "$W_TMP" "$W_CACHE"/takao/takao-fonts-ttf-003.02.01.zip
     w_try_cp_font_files "$W_TMP/takao-fonts-ttf-003.02.01" "$W_FONTSDIR_UNIX"
 
-    w_register_font TakaoGothic.ttf "TakaoGothic"
-    w_register_font TakaoPGothic.ttf "TakaoPGothic"
-    w_register_font TakaoMincho.ttf "TakaoMincho"
-    w_register_font TakaoPMincho.ttf "TakaoPMincho"
-    w_register_font TakaoExGothic.ttf "TakaoExGothic"
-    w_register_font TakaoExMincho.ttf "TakaoExMincho"
+    w_register_font takaogothic.ttf "TakaoGothic"
+    w_register_font takaopgothic.ttf "TakaoPGothic"
+    w_register_font takaomincho.ttf "TakaoMincho"
+    w_register_font takaopmincho.ttf "TakaoPMincho"
+    w_register_font takaoexgothic.ttf "TakaoExGothic"
+    w_register_font takaoexmincho.ttf "TakaoExMincho"
 }
 
 #----------------------------------------------------------------
@@ -10748,7 +10750,7 @@ w_metadata uff fonts \
     year="2010" \
     media="download" \
     file1="ubuntu-font-family-0.70.1.zip" \
-    installed_file1="$W_FONTSDIR_WIN/Ubuntu-R.ttf" \
+    installed_file1="$W_FONTSDIR_WIN/ubuntu-r.ttf" \
     homepage="https://launchpad.net/ubuntu-font-family"
 
 load_uff()
@@ -10757,10 +10759,10 @@ load_uff()
     w_try_unzip "$W_TMP" "$W_CACHE"/uff/ubuntu-font-family-0.70.1.zip
     w_try_cp_font_files "$W_TMP/ubuntu-font-family-0.70.1" "$W_FONTSDIR_UNIX"
 
-    w_register_font Ubuntu-R.ttf "Ubuntu"
-    w_register_font Ubuntu-I.ttf "Ubuntu Italic"
-    w_register_font Ubuntu-B.ttf "Ubuntu Bold"
-    w_register_font Ubuntu-BI.ttf "Ubuntu Bold Italic"
+    w_register_font ubuntu-r.ttf "Ubuntu"
+    w_register_font ubuntu-i.ttf "Ubuntu Italic"
+    w_register_font ubuntu-b.ttf "Ubuntu Bold"
+    w_register_font ubuntu-bi.ttf "Ubuntu Bold Italic"
 }
 
 #----------------------------------------------------------------
@@ -10771,7 +10773,7 @@ w_metadata vlgothic fonts \
     year="2014" \
     media="download" \
     file1="VLGothic-20141206.tar.xz" \
-    installed_file1="$W_FONTSDIR_WIN/VL-Gothic-Regular.ttf" \
+    installed_file1="$W_FONTSDIR_WIN/vl-gothic-regular.ttf" \
     homepage="https://ja.osdn.net/projects/vlgothic"
 
 load_vlgothic()
@@ -10782,8 +10784,8 @@ load_vlgothic()
     w_try tar -Jxf "$W_CACHE/vlgothic/VLGothic-20141206.tar.xz"
     w_try_cp_font_files "$W_TMP/VLGothic" "$W_FONTSDIR_UNIX"
 
-    w_register_font VL-Gothic-Regular.ttf "VL Gothic"
-    w_register_font VL-PGothic-Regular.ttf "VL PGothic"
+    w_register_font vl-gothic-regular.ttf "VL Gothic"
+    w_register_font vl-pgothic-regular.ttf "VL PGothic"
 }
 
 #----------------------------------------------------------------
